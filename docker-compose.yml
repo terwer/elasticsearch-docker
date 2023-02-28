@@ -1,0 +1,41 @@
+version: "3.0"
+services:
+  elasticsearch:
+    container_name: es-container
+    image: terwer/elasticsearch:7.17.5
+    build:
+      context: .
+      dockerfile: elasticsearch/Dockerfile
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    networks:
+      - es-net
+    ports:
+      - "9200:9200"
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-container:9200
+    networks:
+      - es-net
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana/data:/usr/share/kibana/data
+networks:
+  es-net:
+    driver: bridge
+
+volumes:
+  esdata:
+    driver: local
+  kibanadata:
+    driver: local

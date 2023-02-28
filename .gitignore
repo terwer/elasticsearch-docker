@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+elasticsearch/data
+elasticsearch/logs
+elasticsearch/plugins
+kibana/data
